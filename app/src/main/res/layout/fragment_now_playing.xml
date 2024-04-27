@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/cool_blue"
+android:padding="10dp"
+    android:layout_height="wrap_content"
+    tools:context=".NowPlaying">
+
+<com.google.android.material.imageview.ShapeableImageView
+    android:id="@+id/coverNp"
+    android:layout_width="70dp"
+    android:layout_height="50dp"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
+    app:shapeAppearanceOverlay="@style/curved"
+    android:src="@drawable/icon"
+    />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btPlayPauseNp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/play_icon"
+        app:iconTint="@color/white"
+        android:backgroundTint="@color/cool_pink"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/nextBtnNp"
+        android:layout_marginEnd="10dp"
+        />
+<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+   android:id="@+id/nextBtnNp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:icon="@drawable/next_icon"
+    app:iconTint="@color/white"
+    android:backgroundTint="@color/cool_pink"
+    android:layout_centerVertical="true"
+    android:layout_marginEnd="10dp"
+    android:layout_alignParentEnd="true"/>
+    <TextView
+        android:id="@+id/songNameNp"
+        android:textSize="10sp"
+        android:textColor="@color/white"
+        android:text="@string/now_playing"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:layout_toStartOf="@id/btPlayPauseNp"
+        android:layout_toEndOf="@id/coverNp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textStyle="bold"/>
+</RelativeLayout>

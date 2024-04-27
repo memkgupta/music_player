@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+
+    
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:padding="10dp"
+           android:orientation="vertical"
+           android:layout_height="match_parent">
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:orientation="horizontal"
+
+               android:layout_height="wrap_content">
+
+               <!--    for buttons-->
+               <Button
+                   android:id="@+id/btShuffle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:layout_weight="1"
+
+                   android:contentDescription="@string/shuffle"
+                   android:layout_marginRight="5dp"
+                   android:drawableTop="@drawable/shuffle_icon"
+                   android:text="@string/shuffle"
+                   android:textColor="@color/black"
+                   android:textAllCaps="false"
+                   style="@style/Widget.AppCompat.Button.Borderless"
+                   />
+               <Button
+                   android:id="@+id/btFav"
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:contentDescription="@string/favourites"
+                   android:layout_marginRight="5dp"
+                   android:text="@string/favourites"
+                   android:textColor="@color/black"
+                   android:textAllCaps="false"
+                   android:layout_weight="1"
+                   android:drawableTop="@drawable/favourite_icon"
+                   style="@style/Widget.AppCompat.Button.Borderless"
+                   />
+               <Button
+                   android:id="@+id/btPlayList"
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:layout_weight="1"
+                   android:text="@string/playlist"
+                   android:textColor="@color/black"
+                   android:textAllCaps="false"
+                   android:drawableTop="@drawable/playlist_icon"
+                   android:contentDescription="@string/playlist"
+                   style="@style/Widget.AppCompat.Button.Borderless"
+                   />
+
+           </LinearLayout>
+           <TextView
+               android:id="@+id/totalSongs"
+               android:layout_width="match_parent"
+               android:textColor="@color/black"
+               android:layout_gravity="center"
+               android:gravity="center"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_height="wrap_content"
+               android:text="@string/total_songs">
+
+           </TextView>
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/musicRV"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"/>
+       </LinearLayout>
+
+       <fragment
+           android:id="@+id/nowPlayingFragmentContainer"
+           android:name="com.example.musicplayerapp.NowPlaying"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintEnd_toStartOf="parent"
+           tools:layout="@layout/fragment_now_playing"
+           >
+
+       </fragment>
+   </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu"
+        />
+</androidx.drawerlayout.widget.DrawerLayout>
