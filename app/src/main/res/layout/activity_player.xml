@@ -33,6 +33,7 @@
         android:layout_weight="1"
         android:text="@string/world_of_music"/>
     <ImageButton
+        android:id="@+id/favBtnPA"
         android:contentDescription="@string/add_to_favourite_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

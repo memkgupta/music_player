@@ -2,9 +2,11 @@ package com.example.musicplayerapp
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
@@ -38,6 +40,8 @@ class PlayerActivity : AppCompatActivity(),ServiceConnection,MediaPlayer.OnCompl
         var min15:Boolean = false
         var min30:Boolean = false;
         var min60:Boolean = false;
+        var isFav : Boolean = false
+        var fIndex:Int = -1
     }
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +51,20 @@ class PlayerActivity : AppCompatActivity(),ServiceConnection,MediaPlayer.OnCompl
 
         setContentView(binding.root)
         when(intent.getStringExtra("class")){
+            "FavouriteActivity"->{
+                songPosition = intent.getIntExtra("index",0);
+                musicListPA = ArrayList()
+                musicListPA.addAll(FavouriteActivity.favouriteSongs)
+                startMusicService()
+                setLayout()
+            }
+            "FavouriteAdapter"->{
+                songPosition = intent.getIntExtra("index",0);
+                musicListPA = ArrayList()
+                musicListPA.addAll(FavouriteActivity.favouriteSongs)
+                startMusicService()
+                setLayout()
+            }
             "NowPlaying"->{
                 setLayout()
                 binding.seekBarStart.text = formatDuration(musicService!!.mediaPlayer!!.currentPosition.toLong())
@@ -150,7 +168,18 @@ startMusicService()
         }
 
 //   songPosition=intent.getIntExtra("index",0);
-
+binding.favBtnPA.setOnClickListener {
+    if(isFav){
+        isFav = false
+        binding.favBtnPA.setImageResource(R.drawable.heart_outline)
+        FavouriteActivity.favouriteSongs.removeAt(fIndex)
+    }
+    else{
+        isFav = true
+        binding.favBtnPA.setImageResource(R.drawable.favourite_icon)
+        FavouriteActivity.favouriteSongs.add(musicListPA[songPosition])
+    }
+}
 
 
 binding.btPlayPause.setOnClickListener{
@@ -203,6 +232,7 @@ binding.btTimer.setOnClickListener {
         }
     }
     private fun setLayout(){
+        fIndex = favouriteChecker(musicListPA[songPosition].id)
         try {
             Glide.with(this@PlayerActivity).load(musicListPA[songPosition].artUri).apply(RequestOptions().placeholder(R.drawable.icon)).centerCrop().into(binding.cover);
         }
@@ -214,7 +244,10 @@ binding.btTimer.setOnClickListener {
 if(timer){
     binding.btTimer.setColorFilter(ContextCompat.getColor(this,R.color.cool_blue))
 }
-
+if(isFav) binding.favBtnPA.setImageResource(R.drawable.favourite_icon)
+        else{
+    binding.favBtnPA.setImageResource(R.drawable.heart_outline)
+        }
     }
 
     private fun startMusicService(){
@@ -257,6 +290,8 @@ val binder =p1 as MusicService.MyBinder
         musicService = binder.currentService()
         createMediaPlayer()
 musicService!!.seekBarSetup()
+        musicService!!.audioManager =  getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        musicService!!.audioManager.requestAudioFocus(musicService,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN)
 
     }
 

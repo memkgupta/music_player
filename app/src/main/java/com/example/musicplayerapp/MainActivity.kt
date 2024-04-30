@@ -15,14 +15,18 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicplayerapp.databinding.ActivityMainBinding
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.io.File
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
-        val serviceIntent = Intent(this,MusicService::class.java)
-        stopService(serviceIntent)
+     if(!PlayerActivity.isPlaying && PlayerActivity.musicService!=null){
+         exitApplication()
+     }
+
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -48,6 +52,15 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
       if(requestRuntimePermission()){
           initLayout();
+          FavouriteActivity.favouriteSongs = ArrayList()
+          val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+          val jsonString = editor.getString("FavouriteSongs",null)
+          val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
+
+          if(jsonString!=null){
+              val data:ArrayList<Music> = GsonBuilder().create().fromJson(jsonString,typeToken)
+              FavouriteActivity.favouriteSongs.addAll(data)
+          }
 
       }
 binding.btShuffle.setOnClickListener {
@@ -181,5 +194,13 @@ val  titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITL
         })
         return super.onCreateOptionsMenu(menu)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavouriteActivity.favouriteSongs)
+        editor.putString("FavouriteSongs",jsonString)
+        editor.apply()
     }
 }

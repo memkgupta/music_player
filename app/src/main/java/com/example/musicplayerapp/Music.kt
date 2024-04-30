@@ -35,10 +35,23 @@ fun setSongPosition(increment:Boolean){
 }
 fun exitApplication(){
     if(PlayerActivity.musicService!=null){
+        PlayerActivity.musicService!!.audioManager.abandonAudioFocus(PlayerActivity.musicService)
         PlayerActivity.musicService!!.stopForeground(Service.STOP_FOREGROUND_REMOVE)
         PlayerActivity.musicService!!.mediaPlayer!!.release()
         PlayerActivity.musicService = null
 
     }
     exitProcess(1);
+}
+fun favouriteChecker(id:String):Int{
+    PlayerActivity.isFav = false
+    FavouriteActivity.favouriteSongs.forEachIndexed{index, music ->
+
+         if(id== music.id){
+            PlayerActivity.isFav = true
+          return  index
+        }
+
+    }
+    return -1;
 }

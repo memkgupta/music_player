@@ -60,6 +60,14 @@ class NotificationReciever : BroadcastReceiver() {
             Log.e("error",e.message.toString())
         }
         NowPlaying.binding.songNameNp.text = PlayerActivity.musicListPA[PlayerActivity.songPosition].title
+
         playMusic()
+        PlayerActivity.fIndex = favouriteChecker(PlayerActivity.musicListPA[PlayerActivity.songPosition].id)
+        if(PlayerActivity.isFav){
+            PlayerActivity.binding.favBtnPA.setImageResource(R.drawable.favourite_icon)
+        }
+        else{
+            PlayerActivity.binding.favBtnPA.setImageResource(R.drawable.heart_outline)
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Handler
@@ -12,14 +13,16 @@ import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import java.lang.Exception
 import java.util.Arrays
 
-class MusicService : Service() {
+class MusicService : Service(),AudioManager.OnAudioFocusChangeListener {
     private var myBinder = MyBinder();
     var mediaPlayer : MediaPlayer?=null
     private lateinit var mediaSession:MediaSessionCompat
     private lateinit var runnable: Runnable
+    lateinit var audioManager: AudioManager
     override fun onDestroy() {
         super.onDestroy()
         exitApplication()
@@ -36,7 +39,10 @@ class MusicService : Service() {
         }
     }
     fun showNotification(playPauseBtn:Int){
-
+val intent = Intent(baseContext,PlayerActivity::class.java)
+        intent.putExtra("index",PlayerActivity.songPosition)
+        intent.putExtra("class","NowPlaying")
+        val contentIntent = PendingIntent.getActivity(this,0,intent, PendingIntent.FLAG_IMMUTABLE);
         val prevIntent = Intent(baseContext,NotificationReciever::class.java).setAction(ApplicationClass.PREVIOUS)
         val prevPendingIntent = PendingIntent.getBroadcast(baseContext,0,prevIntent,PendingIntent.FLAG_MUTABLE);
         val nextIntent = Intent(baseContext,NotificationReciever::class.java).setAction(ApplicationClass.NEXT)
@@ -54,6 +60,7 @@ class MusicService : Service() {
             BitmapFactory.decodeResource(resources,R.drawable.icon)
         }
         val notification = NotificationCompat.Builder(baseContext,ApplicationClass.CHANNEL_ID)
+            .setContentIntent(contentIntent)
     .setContentTitle(PlayerActivity.musicListPA[PlayerActivity.songPosition!!].title)
     .setContentText(PlayerActivity.musicListPA[PlayerActivity.songPosition!!].artist)
     .setSmallIcon(R.drawable.playlist_icon)
@@ -102,5 +109,25 @@ class MusicService : Service() {
             Handler(Looper.getMainLooper()).postDelayed(runnable,200)
         }
         Handler(Looper.getMainLooper()).postDelayed(runnable,0)
+    }
+
+    override fun onAudioFocusChange(p0: Int) {
+        if(p0<=0){
+            //pause music
+            PlayerActivity.musicService!!.mediaPlayer!!.pause()
+            NowPlaying.binding.btPlayPauseNp.setIconResource(R.drawable.play_icon)
+            PlayerActivity.binding.btPlayPause.setIconResource(R.drawable.play_icon)
+            PlayerActivity.musicService!!.showNotification(R.drawable.play_icon)
+            PlayerActivity.isPlaying =false
+
+            }
+
+        else{
+            PlayerActivity.musicService!!.mediaPlayer!!.start()
+            NowPlaying.binding.btPlayPauseNp.setIconResource(R.drawable.pause_icon)
+            PlayerActivity.binding.btPlayPause.setIconResource(R.drawable.pause_icon)
+            PlayerActivity.musicService!!.showNotification(R.drawable.pause_icon)
+            PlayerActivity.isPlaying = true
+        }
     }
 }
